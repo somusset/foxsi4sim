@@ -91,6 +91,7 @@ FUNCTION foxsi4_flare_response_simulation, energy_arr, photon_flux, shells=shell
   energy_resolution = 1e*energy_resolution
   
   en0 = get_edges(energy_arr, /mean)
+  width_e = get_edges(energy_arr, /width)
   val0 = en0[0] - abs(en0[0] - energy_arr[0])
   val1 = en0[-1] + abs(en0[-1] - energy_arr[-1])
   en1 = [val0, en0, val1]
@@ -98,9 +99,15 @@ FUNCTION foxsi4_flare_response_simulation, energy_arr, photon_flux, shells=shell
   
   ;----------------------------------------------------------------------------------------------
   ; convolution of the photon flux with a gaussian to take into account the spectral resolution
+  ; 
+  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!
+  ; THIS IS CURRENTLY NOT WORKING, NEED DO FIGURE OUT EDGES EFFECTS FOR BAD RESOLUTION SUCH
+  ; AS 5 KEV FOR INSTANCE.
+  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!
   ;----------------------------------------------------------------------------------------------
   input_flux = photon_flux
-  photon_flux = GAUSS_SMOOTH(input_flux, energy_resolution)
+  kernel = energy_resolution/mean(width_e)
+  photon_flux = GAUSS_SMOOTH(input_flux, kernel)
   
   ;----------------------------------------------------------------------------------------------
   ; get effective area (optics+detector efficiency+blanket and shutter)

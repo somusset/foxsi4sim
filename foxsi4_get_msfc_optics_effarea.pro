@@ -10,7 +10,7 @@ FUNCTION foxsi4_get_msfc_optics_effarea, energy_arr=energy_arr, plot=plot, _extr
   ; :inputs:
   ;
   ; :outputs:
-  ;   The function returns an structure containing the energy array, the radius of the mirror and the effective area
+  ;   The function returns an structure containing the energy array and the effective area
   ;
   ; :keywords:
   ;   energy_arr: an array of energies at which the transmission and absorption are to be calculated
@@ -26,7 +26,7 @@ FUNCTION foxsi4_get_msfc_optics_effarea, energy_arr=energy_arr, plot=plot, _extr
   ; :history:
   ;   2019/08/07, SMusset (UMN), initial release
   ;   2019/10/30, SMusset (UMN), change the effective area to be the sum of the two inner shells (instead of the 3 inner shells)
-  ;   2020/09/16, SMusset (UoG), add the radius to the returned structure to match description of the output
+  ;   2020/09/16, SMusset (UoG), change doc
   ;   
   ; :to be done:
   ;   
@@ -57,9 +57,9 @@ FUNCTION foxsi4_get_msfc_optics_effarea, energy_arr=energy_arr, plot=plot, _extr
 
   IF plot EQ 1 THEN BEGIN
     plot,energy_arr,interpol_data1,chars=3,xtitle='Energy (keV)',ytitle='Effective area (cm2)', thick=3, xth=2, yth=2, charth=2,title='High resolution optic module (Japan)', _extra=extra
-    al_legend, ['optics radius '+strtrim(string(r),2)+' mm','optics height 200 mm'], chars=3, charth=2, /right, _extra=extra
+    ;al_legend, ['optics radius '+strtrim(string(r),2)+' mm','optics height 200 mm'], chars=3, charth=2, /right, _extra=extra
   ENDIF
 
-  result = create_struct("energy_keV", energy_arr, "eff_area_cm2", interpol_data, "module_radius_mm", r)
+  result = create_struct("energy_keV", energy_arr, "eff_area_cm2", interpol_data)
   RETURN, result
 END
