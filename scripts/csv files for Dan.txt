@@ -1,0 +1,27 @@
+
+foxsi4_flare_simulation_m3, FP_spectrum, CS_spectrum, FULL_spectrum, energy_edges=energy_edges
+
+write_csv, 'm35_coronal_photon_flux.csv', CS_spectrum.ENERGY_KEV, CS_spectrum.PHOTON_FLUX
+write_csv, 'm35_footpoint_photon_flux.csv', FP_spectrum.ENERGY_KEV, FP_spectrum.PHOTON_FLUX
+
+FP_count = foxsi4_photonflux_on_detector( FP_spectrum, energy_edges=energy_edges)
+CS_count = foxsi4_photonflux_on_detector( CS_spectrum, energy_edges=energy_edges)
+
+write_csv, 'm35_coronal_photon_flux_ondet.csv', CS_count.ENERGY_KEV, CS_count.COUNT_FLUX
+write_csv, 'm35_footpoint_photon_flux_ondet.csv', FP_count.ENERGY_KEV, FP_count.COUNT_FLUX
+
+; for figures in the proposal
+
+foxsi4_flare_simulation_m3, FP_spectrum, CS_spectrum, FULL_spectrum, energy_edges=energy_edges
+FP_count = foxsi4_photonflux_on_detector( FP_spectrum, energy_edges=energy_edges)
+SI_count = foxsi4_photonflux_on_detector( FULL_spectrum, energy_edges=energy_edges)
+
+write_csv, 'm35_integrated_photon_flux_ondet.csv', SI_count.ENERGY_KEV, SI_count.COUNT_FLUX
+write_csv, 'm35_footpoint_photon_flux_ondet.csv', FP_count.ENERGY_KEV, FP_count.COUNT_FLUX
+
+foxsi4_flare_simulation_c5_hic, FP_spectrum, CS_spectrum, FULL_spectrum, energy_edges=energy_edges
+FP_count = foxsi4_photonflux_on_detector( FP_spectrum, energy_edges=energy_edges)
+CS_count = foxsi4_photonflux_on_detector( CS_spectrum, energy_edges=energy_edges)
+
+write_csv, 'C5_coronal_photon_flux_ondet.csv', CS_count.ENERGY_KEV, CS_count.COUNT_FLUX
+write_csv, 'C5_footpoint_photon_flux_ondet.csv', FP_count.ENERGY_KEV, FP_count.COUNT_FLUX

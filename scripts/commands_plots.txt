@@ -1,0 +1,167 @@
+energy_in = indgen(20)+3.5
+
+area = get_foxsi_optics_effarea( energy_arr=energy_in, module_number=6, $
+    offaxis_angle=offaxis_angle, data_dir=data_dir, plot=plot)
+
+area2 = get_foxsi_optics_effarea( energy_arr=energy_in, module_number=5, $
+    offaxis_angle=offaxis_angle, data_dir=data_dir, plot=plot)
+
+;-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+sophie_linecolors
+window, xs=1500, ys=1000
+plot, area.energy_kev, area.eff_area_cm2, background=1, color=0, chars=3, charth=3, xth=2, yth=2, thick=3, ytitle='Optics effective area (cm2)', xtitle='Energy (keV)', /xlog, /ylog, xr=[3,25], yr=[0.1,100], /ystyle, /xstyle
+oplot, area.energy_kev, area.eff_area_cm2, thick=3, color=3
+oplot, area.energy_kev, area.eff_area_cm2, thick=3, color=3, psym=4
+oplot, area2.energy_kev, area2.eff_area_cm2, thick=3, color=12
+oplot, area2.energy_kev, area2.eff_area_cm2, thick=3, color=12, psym=5
+al_legend, ['module 6','module 5'], linestyle=0, color=[3,12], box=0, /right, chars=3, charth=3,linsize=0.4, thick=3
+
+WRITE_PNG, 'foxsi3_optics_effarea.png', TVRD(/TRUE)
+
+area = foxsi4_get_j_optics_effarea(energy_arr=energy_in )
+sophie_linecolors
+window, xs=1500, ys=1000
+plot, area.energy_kev, area.eff_area, background=1, color=0, chars=3, charth=3, xth=2, yth=2, thick=3, ytitle='Optics effective area (cm2)', xtitle='Energy (keV)', /xlog, /ylog, xr=[3,25], yr=[0.001,10], /ystyle, /xstyle
+oplot, area.energy_kev, area.eff_area, thick=3, color=3
+oplot, area.energy_kev, area.eff_area, thick=3, color=3, psym=4
+al_legend, ['30mm radius','200mm height'],  box=0, /right, chars=3, charth=3
+
+WRITE_PNG, 'foxsi4_optics_j-ef_30_200.png', TVRD(/TRUE)
+
+energy_in = indgen(20)+1.
+det_thick = 10. ; micron
+det_eff = get_foxsi_deteff(energy_arr = energy_in, det_thick = det_thick, type = 'si', no_let=1)
+sophie_linecolors
+window, xs=1500, ys=1000
+plot, det_eff.energy_kev, det_eff.det_eff, background=1, color=0, chars=3, charth=3, xth=2, yth=2, thick=3, ytitle='Detector theoretical QE', xtitle='Energy (keV)', /xlog, /ylog, xr=[1,25], yr=[0.01,1], /ystyle, /xstyle
+oplot, det_eff.energy_kev, det_eff.det_eff, thick=3, color=0, psym=4
+al_legend, ['10um Si'],  box=0, /right, chars=3, charth=3
+
+WRITE_PNG, 'foxsi4_cmos_10um_qe.png', TVRD(/TRUE)
+
+det_thick = 500. ; micron
+det_eff = get_foxsi_deteff(energy_arr = energy_in, det_thick = det_thick, type = 'cdte')
+sophie_linecolors
+window, xs=1500, ys=1000
+plot, det_eff.energy_kev, det_eff.det_eff, background=1, color=0, chars=3, charth=3, xth=2, yth=2, thick=3, ytitle='Detector theoretical QE', xtitle='Energy (keV)', /xlog, /ylog, xr=[3,25], yr=[0.1,2], /ystyle, /xstyle
+oplot, det_eff.energy_kev, det_eff.det_eff, thick=3, color=0, psym=4
+al_legend, ['500um CdTe'],  box=0, /right, chars=3, charth=3
+
+WRITE_PNG, 'foxsi4_cdte_500um_qe.png', TVRD(/TRUE)
+
+;-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+energy = indgen(4000)*0.01+1
+res = foxsi4_flare_simulation_from_goesclass(1d-6,energy_in=energy)
+plot, res.energy_kev, res.photon_flux,color=0,background=1,/xlog,/ylog,thick=3,xth=3,yth=3,charth=3,chars=3,psym=10
+oplot,res.energy_kev, res.thermal_flux, color=3, thick=2
+oplot,res.energy_kev, res.nonthermal_flux, color=12, thick=2
+
+
+;-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+; test if the count rate is independent of energy binning
+
+en1 = indgen(3000)/100.+3.
+en2 = indgen(300)/10.+3
+c5 = 5d-6
+flux1 = foxsi4_flare_simulation_from_goesclass(c5, energy_in=en1, energy_out=energy_out1)
+flux2 = foxsi4_flare_simulation_from_goesclass(c5, energy_in=en2, energy_out=energy_out2)
+count1 = foxsi4_flare_response_simulation(flux1.energy_kev, flux1.PHOTON_FLUX, cmos=1, energy_edges=en1)
+count2 = foxsi4_flare_response_simulation(flux2.energy_kev, flux2.PHOTON_FLUX, cmos=1, energy_edges=en2)
+
+plot, count1.energy_kev, count1.count_flux, /xlog, /ylog, color=1, psym=10
+oplot, count2.energy_kev, count2.count_flux, color=1, psym=10
+
+print, total(count1.count_rate), total(count2.count_rate)
+
+
+;-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+; compare different Si attenuation files
+
+det_thick_um = 500
+thickness_mm = det_thick_um * 1d-3
+
+; foxsi rocket
+file = 'C:\Users\SMusset\Documents\RESEARCH\FOXSI\Science_Analysis\foxsi-science - Copy\/calibration_data/si_atten_len.dat'
+restore, file
+atten_len_um = result.atten_len_um
+energy_keV = result.energy_ev/1000.0
+
+plot, result.energy_ev, result.atten_len_um, thick=3, xth=3, yth=3, charth=3, chars=2.5, xtitle = 'Energy (eV)', ytitle='Atten len (um)', /xlog, /ylog, /xstyle, /ystyle
+
+det_eff = 1 - exp(-det_thick_um/atten_len_um)
+; plot, energy_kev, det_eff, color=1
+
+; data from website
+file='C:\Users\SMusset\Documents\GitHub\foxsi4\silicon'
+read_len_att, FILE=Pp, TAB=TAB
+oplot, tab[*,0], tab[*,1], thick=3, color=3
+
+;foxsi smex
+path = 'C:\Users\SMusset\Documents\GitHub\foxsi4\mass_atten_idl\si.csv'
+data = read_csv(path, table_header=header, n_table_header = 4)
+density_cgs = float(strmid(header[3], 11, 4))
+data_energy_keV = data.field1 * 1000.0 ; energy from eV to keV
+data_attenuation_coeff = data.field2   
+atten_len_um = 10^interpol(alog10(data_attenuation_coeff), alog10(data_energy_keV), alog10(energy_keV))
+path_length_cm = thickness_mm / 10.0
+transmission = exp(-atten_len_um * density_cgs * path_length_cm)
+absorption = 1 - transmission
+oplot, energy_kev, absorption, color=2
+
+;-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+r = foxsi4_effective_area(energy, cdte=1, /plot)
+WRITE_PNG, 'foxsi4_effarea_cdte_module6.png', TVRD(/TRUE)
+
+r = foxsi4_effective_area(energy, cdte=1, high_res_j_optic=1, /plot)
+WRITE_PNG, 'foxsi4_effarea_cdte_jef.png', TVRD(/TRUE)
+
+r = foxsi4_effective_area(energy, cmos=1, /plot)
+WRITE_PNG, 'foxsi4_effarea_cmos_module6.png', TVRD(/TRUE)
+
+r = foxsi4_effective_area(energy, cmos=1, high_res_j_optic=1, /plot)
+WRITE_PNG, 'foxsi4_effarea_cmos_jef.png', TVRD(/TRUE)
+
+energy = findgen(250)/10. +1
+r = foxsi4_effective_area(energy, cdte=1, cea_let=1, det_thick=1000., /plot)
+WRITE_PNG, 'foxsi4_effarea_cdte_cea_module6.png', TVRD(/TRUE)
+
+r = foxsi4_effective_area(energy, cdte=1, cea_let=1, det_thick=1000., /plot, al_um=22)
+WRITE_PNG, 'foxsi4_effarea_cdte_cea_module6_al-22.png', TVRD(/TRUE)
+
+r = foxsi4_effective_area(energy, cdte=1, cea_let=1, det_thick=1000., /plot, be_um=1836)
+WRITE_PNG, 'foxsi4_effarea_cdte_cea_module6_be-1836.png', TVRD(/TRUE)
+
+;-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+cd, 'C:\Users\SMusset\Documents\GitHub\foxsi4\'
+goesflux=5d-7
+goesclass='B5'
+foxsi4_typical_flare_simulation, goesflux, goesclass, save=1
+foxsi4_typical_flare_simulation_cea, goesflux, goesclass
+
+;-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FLUXES = [5D-7, 1D-6, 3D-6, 5D-6, 1D-5]
+CLASSES = ['B5','C1','C3','C5','M1']
+
+CDTE_AL = [47, 94, 172, 219, 305]
+CDTE_BE = [4375, 8125, 15313, 19875, -1]
+CMOS_AL = [12, 35, 86, 117, 168]
+CMOS_BE = [938, 2500, 7500, 10313, 15000]
+
+WINDOW, XS=1300, YS=1300
+PLOT, FLUXES, CDTE_AL, PSYM=5, /XLOG, BACKGROUND=1, COLOR=0, SYMSI=2, THICK=3, XTH=3, YTH=3, CHARTH=3, CHARS=3, XTITLE='GOES FLUX', YTITLE='Al THICKNESS (microns)', xr=[1d-7, 2d-5]
+OPLOT, FLUXES, CMOS_AL, PSYM=2, COLOR=0, SYMSI=2, THICK=3
+AL_LEGEND, ['CdTe','CMOS'], box=0, chars=3, charth=3, psym=[5,2], thick=3, symsi=2 
+
+
+WINDOW, XS=1300, YS=1300
+PLOT, FLUXES[0:3], CDTE_BE[0:3]/1d3, PSYM=5, /XLOG, BACKGROUND=1, COLOR=0, SYMSI=2, THICK=3, XTH=3, YTH=3, CHARTH=3, CHARS=3, XTITLE='GOES FLUX', YTITLE='Be THICKNESS (mm)', xr=[1d-7, 2d-5]
+OPLOT, FLUXES, CMOS_BE/1d3, PSYM=2, COLOR=0, SYMSI=2, THICK=3
+AL_LEGEND, ['CdTe','CMOS'], box=0, chars=3, charth=3, psym=[5,2], thick=3, symsi=2 
+
+;=====================================================
+cd,'SK2013.20110224'
+fit_results = spex_read_fit_results('ospex_results_FP.fits')
+print, fit_results.SPEX_SUMM_PARAMS

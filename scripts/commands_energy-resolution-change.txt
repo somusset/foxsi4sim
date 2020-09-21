@@ -1,0 +1,9 @@
+; in the foxsi4 github directory, do the following:
+
+foxsi4_proposal_figure, num=1, int_time=1., counting_stat=0, pinhole=0, highres=1
+foxsi4_proposal_figure, num=1, int_time=1., counting_stat=0, pinhole=0, highres=1, energy_res=2
+foxsi4_proposal_figure, num=1, int_time=1., counting_stat=0, pinhole=0, highres=1, energy_res=5
+
+foxsi4_proposal_figure, num=3, int_time=60., counting_stat=0, pinhole=0, highres=1
+foxsi4_proposal_figure, num=3, int_time=60., counting_stat=0, pinhole=0, highres=1, energy_res=2
+foxsi4_proposal_figure, num=3, int_time=60., counting_stat=0, pinhole=0, highres=1, energy_res=5.
