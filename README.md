@@ -1,4 +1,8 @@
-# foxsi4
+# FOXSI4sim
+
+This software is written in IDL. It uses the SolarSoft distribution, in particular the X-ray spectroscopy package. It also uses the FOXSI-science distribution assuming it has been installed as described: see https://github.com/foxsi/foxsi-science .
+
+This software has not yet been tested on multiple computers. Data files could be missing, or paths could be wrong. Please report any bug!
 
 ## Description
 
