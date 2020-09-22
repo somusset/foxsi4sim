@@ -2,7 +2,7 @@
 
 ## Description
 
-This is a set of routines which aim to the simulation of flare spectra, and the simulation of the FOXSI-4 sounding rocket spectral response / count spectra.
+This is a set of routines which aim to the simulation of flare spectra, and the simulation of the FOXSI-4 sounding rocket spectral response / count spectra. The tree showing interaction between the routines can be found in the 'doc' section.
 
 Typical flare spectra are simulated using scaling laws described in Battaglia et al 2005.
 
