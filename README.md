@@ -74,52 +74,75 @@ The wrapper `foxsi4_plot_effective_area` will plot the effective area for the se
  
 ### to optimize an attenuator thickness to the M3 flare
 
-; simulate the flare photon flux (for a real M3 or C3 flare)   
+Simulate the flare photon flux (for a real M3 or C3 flare)   
+```
 foxsi4_flare_simulation_m3, FP_spectrum, CS_spectrum, FULL_spectrum, energy_edges=energy_edges, save=save  
 ; foxsi4_flare_simulation_c3, FP_spectrum, CS_spectrum, FULL_spectrum, energy_edges=energy_edges, save=save  
-
-; best attenuator for cdte+10 shell  
+```
+Find the best attenuator for cdte+10 shell  
+```
 bestatt = foxsi4_best_attenuator(full_spectrum, energy_edges, cdte=1, al=1, loud=0, totcount_limit=5000)  
-; result print should be  
-	while loop stopped for thickness =       370.117 um  
-	Al  
-	total count at the end if        4990.4589  
-	limit in total count was     5000  
+```
+result print should be:
+```  
+    while loop stopped for thickness =       370.117 um  
+    Al  
+    total count at the end if        4990.4589  
+    limit in total count was     5000  
+```
 
-; best attenuator for cdte + msfc hi res  
+Find best attenuator for cdte + msfc hi res  
+```
 bestatt = foxsi4_best_attenuator(full_spectrum, energy_edges, cdte=1, al=1, loud=0, totcount_limit=5000, msfc=1)  
-; this last line should print as a result:  
+```
+this last line should print as a result:  
+```
 	while loop stopped for thickness =       250.000 um  
 	Al  
 	total count at the end if        5003.9064  
 	limit in total count was     5000  
+```
 
-; best attenuator for cmos+msfc high rate  
+Find best attenuator for cmos+msfc high rate  
+```
 bestatt = foxsi4_best_attenuator(full_spectrum, energy_edges, cmos=1, al=1, loud=0, msfc=1)  
-; result:  
+```
+The result:  
+```
 	while loop stopped for thickness =       239.258 um  
 	Al  
 	total count at the end if        798.54748  
 	limit in total count was      800  
+```
 
-; best attenuator for cmos+ nagoya high rate
+Find best attenuator for cmos+ nagoya high rate
+```
 bestatt = foxsi4_best_attenuator(full_spectrum, energy_edges, cmos=1, al=1, loud=0, high_res_j_optic=1)    
-; result:  
+```
+Expected result:  
+```
 	while loop stopped for thickness =       182.617 um  
 	Al  
 	total count at the end if        793.38454  
 	limit in total count was      800  
+```
 
-; best attenuator for cdte + nagoya high rate  
+Find best attenuator for cdte + nagoya high rate  
+```
 bestatt = foxsi4_best_attenuator(full_spectrum, energy_edges, cdte=1, al=1, totcount_limit=5000, loud=0, high_res_j_optic=1)    
-; result:  
+```
+Expected result:  
+```
 	while loop stopped for thickness =       173.828 um    
 	Al  
 	total count at the end if        5021.3353    
 	limit in total count was     5000  
+```
 
 ### create the effective area plot   
+```
 foxsi4_plot_effective_area  
+```
 
 ## Producing flare simulation figures 
 
@@ -139,8 +162,12 @@ foxsi4_proposal_figure, num=1, int_time=1., counting_stat=1, pinhole=0, highres=
 
 ### Figure 2 = C3 flare
 
-; without noise  
+without noise:
+```
 foxsi4_proposal_figure, num=3, int_time=60., counting_stat=0, pinhole=0, highres=1
+```
 
-; with noise  
+with noise:
+```
 foxsi4_proposal_figure, num=3, int_time=60., counting_stat=1, pinhole=0, highres=1
+```
