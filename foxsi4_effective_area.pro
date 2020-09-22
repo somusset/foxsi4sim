@@ -26,6 +26,7 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
   ;   cdte: if this keyword is set, then efficiency of a cdte detector is considered
   ;   det_thick: thickness of the detector in microns. default is 10 for CMOS and 500 for CdTe
   ;   cea_let: use my own approximation of a 2 keV threshold for the cea detector
+  ;   energy_resolution: detector energy resolution in keV
   ;   msfc_high_res: if set, take the theoretical effective area of the 2 innermost shell of a 10-shell module: this mimic the high resolution optic module from marshall
   ;   high_res_j_optic: if set, take the high resolution optic module from japan
   ;   no_det: do not include detector efficiency

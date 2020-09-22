@@ -98,23 +98,18 @@ FUNCTION foxsi4_flare_response_simulation, energy_arr, photon_flux, shells=shell
   DEFAULT, energy_edges, en1
   
   ;----------------------------------------------------------------------------------------------
-  ; convolution of the photon flux with a gaussian to take into account the spectral resolution
-  ; 
-  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!
-  ; THIS IS CURRENTLY NOT WORKING, NEED DO FIGURE OUT EDGES EFFECTS FOR BAD RESOLUTION SUCH
-  ; AS 5 KEV FOR INSTANCE.
-  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!
-  ;----------------------------------------------------------------------------------------------
-  input_flux = photon_flux
-  kernel = energy_resolution/mean(width_e)
-  photon_flux = GAUSS_SMOOTH(input_flux, kernel)
-  
-  ;----------------------------------------------------------------------------------------------
   ; get effective area (optics+detector efficiency+blanket and shutter)
   ;----------------------------------------------------------------------------------------------
   area = foxsi4_effective_area(energy_arr, shells=shells, al_um=al_um, be_um=be_um, cmos=cmos, pinhole=pinhole, cdte=cdte,  high_res_j_optic=high_res_j_optic, msfc_high_res=msfc_high_res, no_det=no_det, plot=plot, loud=loud, det_thick=det_thick, cea_let=cea_let)
-  count_flux = photon_flux*area.eff_area_cm2  
+  count_flux = photon_flux*area.eff_area_cm2 
   
+  ;----------------------------------------------------------------------------------------------
+  ; convolution of the count flux with a gaussian to take into account the spectral resolution
+  ;----------------------------------------------------------------------------------------------
+  input_flux = count_flux
+  sigma = energy_resolution/mean(width_e)/(2.*sqrt(2*alog(2)))
+  count_flux = GAUSS_SMOOTH(input_flux, sigma, kernel=kernel, /edge_truncate)
+
   ;----------------------------------------------------------------------------------------------
   ; add Poisson noise
   ;----------------------------------------------------------------------------------------------
