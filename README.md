@@ -127,11 +127,15 @@ Note: need to include energy resolution. This is partially implemented in the co
 
 ### Figure 1 = M3 flare
 
-; without noise  
+without noise:
+```
 foxsi4_proposal_figure, num=1, int_time=1., counting_stat=0, pinhole=0, highres=1  
+```
 
-; with noise  
+with noise:
+```  
 foxsi4_proposal_figure, num=1, int_time=1., counting_stat=1, pinhole=0, highres=1  
+```
 
 ### Figure 2 = C3 flare
 
