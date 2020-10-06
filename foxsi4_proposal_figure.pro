@@ -202,11 +202,12 @@ PRO foxsi4_proposal_figure, NUM=NUM, int_time=int_time, counting_stat=counting_s
   IF num EQ 2 THEN BEGIN
     ; restore data file
     
+    os=!VERSION.OS_FAMILY
+    IF os EQ 'Windows' THEN sep_char='\' ELSE sep_char='/'
     mypath = routine_filepath()
-    sep = strpos(mypath,'\',/reverse_search)
-    IF sep EQ -1 THEN sep=strpos(mypath,'/',/reverse_search)
+    sep = strpos(mypath,sep_char,/reverse_search)
     path = strmid(mypath, 0, sep)
-    file = path+'\flare_data\fix_emcube_0.sav'
+    file = path+'/flare_data/fix_emcube_0.sav'
     restore, file
 
     ; define some constants

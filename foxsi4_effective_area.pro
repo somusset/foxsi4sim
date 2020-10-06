@@ -59,6 +59,7 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
   ;                               in get_foxsi_deteff in the FOXSI science
   ;   2019/10/28, SMusset (UMN), added the pinhole attenuator option
   ;   2020/09/16, SMusset (UoG), change path to file and update documentation
+  ;   2020/10/06, SMusset (UoG), change '\' to '/' in path for compatibility with Mac and Unix
   ;
   ; :to be done:
   ;   Currently nothing is plotted if the plot keyword is set to 1. Maybe we do not need the plot option anymore.
@@ -131,12 +132,12 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
 
     IF cdte EQ 1 THEN BEGIN
       IF loud EQ 1 THEN print, 'theoretical QE for CdTe with '+thickness_str+'um thickness'
-      IF cea_let EQ 1 THEN det_eff = get_foxsi_deteff(energy_arr = energy_out, det_thick = det_thick, type = 'cdte', let_file='detector_data\efficiency_cea.sav') $
+      IF cea_let EQ 1 THEN det_eff = get_foxsi_deteff(energy_arr = energy_out, det_thick = det_thick, type = 'cdte', let_file='detector_data/efficiency_cea.sav') $
         ELSE det_eff = get_foxsi_deteff(energy_arr = energy_out, det_thick = det_thick, type = 'cdte')
       eff_area = eff_area*det_eff.det_eff
       IF loud EQ 1 THEN print, 'now including attenuation by CdTe electrodes'
          ;attenuation length for Au electrodes
-         f = GETENV('FOXSIPKG')+'\calibration_data\' + ["au_atten_len.dat","pt_atten_len.dat"] ; sophie used GETENV for compatibility with windows
+         f = GETENV('FOXSIPKG')+'/calibration_data/' + ["au_atten_len.dat","pt_atten_len.dat"] ; sophie used GETENV for compatibility with windows
          restore, f[0]
          energy_keV_au = data.energy_ev/1000.
          atten_len_um_au = data.atten_len_um

@@ -32,6 +32,7 @@ FUNCTION foxsi4_flare_simulation_from_goesclass, peak_flux, energy_in=energy_in,
   ; :history:
   ;   2019/07/22, SMusset (UMN), initial release
   ;   2019/08/19, SMusset (UMN), change call to closest - need: array, then value
+  ;   2020/10/06, SMusset (UoG), changed path access to be compatible with Unix and Mac
   ;   
   ; :note:
   ;   they are several function 'closest' in ssw - e.g. in gx simulator... and in the foxsi soft. Call to closest here may not work on other computers
@@ -48,10 +49,11 @@ FUNCTION foxsi4_flare_simulation_from_goesclass, peak_flux, energy_in=energy_in,
   ; read the typical flare data  
   ;restore, 'C:\Users\SMusset\Documents\GitHub\foxsi-smex\idl\typical_flares.sav' ; restore variables fgoes, temp, em, gamma, f35
   mypath = routine_filepath()
-  sep = strpos(mypath,'\',/reverse_search)
-  IF sep EQ -1 THEN sep=strpos(mypath,'/',/reverse_search)
+  os=!VERSION.OS_FAMILY
+  IF os EQ 'Windows' THEN sep_char='\' ELSE sep_char='/'
+  sep = strpos(mypath,sep_char,/reverse_search)
   path = strmid(mypath, 0, sep)
-  restore, path+'\typical_flare_scales\typical_flares.sav' ; restore variables fgoes, temp, em, gamma, f35
+  restore, path+sep_char+'typical_flare_scales'+sep_char+'typical_flares.sav' ; restore variables fgoes, temp, em, gamma, f35
   ; this file was created for the FOXSI SMEX analysis
 ;  ind = closest(peak_flux, fgoes) ;  index in the fgoes tab that correspond to the values the closest to goes_flux
   ind = closest(fgoes, peak_flux) ;  index in the fgoes tab that correspond to the values the closest to goes_flux

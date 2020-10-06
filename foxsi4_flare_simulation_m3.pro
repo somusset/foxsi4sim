@@ -31,16 +31,19 @@ PRO foxsi4_flare_simulation_m3, FP_spectrum, CS_spectrum, FULL_spectrum, energy_
  ; :history:
  ;   2019/08/22, SMusset (UMN), initial release
  ;   2020/09/20, SMusset (UoG), changed path to data
+ ;   2020/10/06, SMusset (UoG), changed path access to be compatible with Unix and Mac
  ;-
 
  DEFAULT, plot, 1
  DEFAULT, save, 0
  
+ os=!VERSION.OS_FAMILY
+ IF os EQ 'Windows' THEN sep_char='\' ELSE sep_char='/'
+
  mypath = routine_filepath()
- sep = strpos(mypath,'\',/reverse_search)
- IF sep EQ -1 THEN sep=strpos(mypath,'/',/reverse_search)
+ sep = strpos(mypath,sep_char,/reverse_search)
  path = strmid(mypath, 0, sep)
- datadir = path+'\flare_data\SK2013.20110224\'
+ datadir = path+sep_char+'flare_data'+sep_char+'SK2013.20110224'+sep_char
 
  chars=3
  window_ind = 0

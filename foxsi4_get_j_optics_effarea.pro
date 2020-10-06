@@ -25,6 +25,7 @@ FUNCTION foxsi4_get_j_optics_effarea, energy_arr=energy_arr, r=r, plot=plot, _ex
   ;
   ; :history:
   ;   2019/07/29, SMusset (UMN), initial release
+  ;   2020/10/06, SMusset (UoG), change path to file and make file access compatible with Mac and Unix
   ;
   ; :to be done:
   ;   Right now we are using the data sent to us for optic height of 100mm, but for FOXSI4 we will have 200mm height,
@@ -34,14 +35,20 @@ FUNCTION foxsi4_get_j_optics_effarea, energy_arr=energy_arr, r=r, plot=plot, _ex
   DEFAULT, r, 30 ; radius of the mirror
   DEFAULT, plot, 0
 
-  IF R EQ 30 THEN opticfile = 'optics_data\r30mm_sigma1nm_height100mm_cm2_kev.dat' $
-    ELSE IF R eq 50 THEN opticfile = 'optics_data\r50mm_sigma1nm_height100mm_cm2_kev.dat' $
+  IF R EQ 30 THEN opticfile = 'optics_data/r30mm_sigma1nm_height100mm_cm2_kev.dat' $
+    ELSE IF R eq 50 THEN opticfile = 'optics_data/r50mm_sigma1nm_height100mm_cm2_kev.dat' $
       ELSE BEGIN
         print, 'This radius is not available, picked r=30 mm instead'
-        opticfile = 'optics_data\r30mm_sigma1nm_height100mm_cm2_kev.dat'
+        opticfile = 'optics_data/r30mm_sigma1nm_height100mm_cm2_kev.dat'
       ENDELSE
   
-  read_list_txt, file=opticfile, tab=tab1
+  os=!VERSION.OS_FAMILY
+  IF os EQ 'Windows' THEN sep_char='\' ELSE sep_char='/'
+  mypath = routine_filepath()
+  sep = strpos(mypath,sep_char,/reverse_search)
+  path = strmid(mypath, 0, sep)
+  
+  read_list_txt, file=path+sep_char+opticfile, tab=tab1
   
   energy1 = double(reform(tab1[*,0])) ; in kev
   effarea1 = double(reform(tab1[*,1])) ; in cm2

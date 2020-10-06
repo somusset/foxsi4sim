@@ -38,6 +38,7 @@ FUNCTION foxsi4_get_shutter, energy_arr=energy_arr, be_um=be_um, al_um=al_um, po
   ;   2019/07/29, SMusset (UMN), updated values for FOXSI-3 defaults, from JVievering
   ;   2019/08/06, SMusset (UMN), added polymide option
   ;   2020/09/16, SMusset (UoG), changed path to polymide data + update documentation
+  ;   2020/10/06, SMusset (UoG), changed default data_dir for compatibility with Mac and Unix
   ;   
   ; :to be done:
   ;-
@@ -45,7 +46,7 @@ FUNCTION foxsi4_get_shutter, energy_arr=energy_arr, be_um=be_um, al_um=al_um, po
   default, be_um, 0.0
   default, al_um, 0.0
   default, poly_um, 0.0
-  default, data_dir, 'calibration_data\'
+  default, data_dir, 'calibration_data/'
 
   ; New defaults for FOXSI-3 
   material = ['mylar', 'Be', 'Al', 'Kapton']

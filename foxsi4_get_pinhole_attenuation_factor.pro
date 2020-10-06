@@ -23,11 +23,18 @@ FUNCTION foxsi4_get_pinhole_attenuation_factor, energy_arr=energy_arr
   ; :history:
   ;   2019/10/28, SMusset (UMN), initial release
   ;   2020/09/16, SMusset (UoG), change path to file
+  ;   2020/10/06, SMusset (UoG), change path to file and make it compatible with Unix and Mac
   ;
   ; :to be done:
   ;-
   
-  file = 'C:\Users\SMusset\Documents\GitHub\foxsi4\material_data\pinhole_attenuation_factor.txt'
+  os=!VERSION.OS_FAMILY
+  IF os EQ 'Windows' THEN sep_char='\' ELSE sep_char='/'
+  mypath = routine_filepath()
+  sep = strpos(mypath,sep_char,/reverse_search)
+  path = strmid(mypath, 0, sep)
+
+  file = path+'/material_data/pinhole_attenuation_factor.txt'
   read_list_txt, file=file, tab=tab
 
   energy_att_kev = double(reform(tab[*,0]))

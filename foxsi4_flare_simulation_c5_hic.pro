@@ -29,7 +29,8 @@ PRO foxsi4_flare_simulation_c5_hic, FP_spectrum, FP2_spectrum, CS_spectrum, FULL
   ;
   ; :history:
   ;   2019/08/29, SMusset (UMN), initial release
-  ;   2020/09/20, SMusset (UMN), changed path to typical flare parameters
+  ;   2020/09/20, SMusset (UoG), changed path to typical flare parameters
+  ;   2020/10/06, SMusset (UoG), changed path access to be compatible with Unix and Mac
   ;   
   ; :Note:
   ;   It seems that this is not a C5 flare after all...
@@ -45,13 +46,16 @@ PRO foxsi4_flare_simulation_c5_hic, FP_spectrum, FP2_spectrum, CS_spectrum, FULL
   ;-------------------------------------------------
   ; Read the flare data
   ;-------------------------------------------------
+  
+  os=!VERSION.OS_FAMILY
+  IF os EQ 'Windows' THEN sep_char='\' ELSE sep_char='/'
 
   mypath = routine_filepath()
-  sep = strpos(mypath,'\',/reverse_search)
-  IF sep EQ -1 THEN sep=strpos(mypath,'/',/reverse_search)
+  
+  sep = strpos(mypath,sep_char,/reverse_search)
   path = strmid(mypath, 0, sep)
 
-  file = path+'\flare_data\photonflux_fineEbin.sav'
+  file = path+sep_char+'flare_data'+sep_char+'photonflux_fineEbin.sav'
   restore, file
   
   energy_mean = get_edges(energy, /mean)

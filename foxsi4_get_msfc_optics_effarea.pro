@@ -27,6 +27,7 @@ FUNCTION foxsi4_get_msfc_optics_effarea, energy_arr=energy_arr, plot=plot, _extr
   ;   2019/08/07, SMusset (UMN), initial release
   ;   2019/10/30, SMusset (UMN), change the effective area to be the sum of the two inner shells (instead of the 3 inner shells)
   ;   2020/09/16, SMusset (UoG), change doc
+  ;   2020/10/06, SMusset (UoG), change path access + make it compatible with Mac and Unix
   ;   
   ; :to be done:
   ;   
@@ -34,7 +35,14 @@ FUNCTION foxsi4_get_msfc_optics_effarea, energy_arr=energy_arr, plot=plot, _extr
 
   DEFAULT, plot, 0
 
-  file = 'optics_data\3Inner_EA_EPDL97.csv'
+  ; find and read data file 
+  ;-------------------------
+  os=!VERSION.OS_FAMILY
+  IF os EQ 'Windows' THEN sep_char='\' ELSE sep_char='/'
+  mypath = routine_filepath()
+  sep = strpos(mypath,sep_char,/reverse_search)
+  path = strmid(mypath, 0, sep)
+  file = path+'/optics_data/3Inner_EA_EPDL97.csv'
 
   opt = read_csv(file)
 
