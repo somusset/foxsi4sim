@@ -89,9 +89,9 @@ bestatt = foxsi4_best_attenuator(full_spectrum, energy_edges, cdte=1, al=1, loud
 ```
 result print should be:
 ```  
-    while loop stopped for thickness =       370.117 um  
+    while loop stopped for thickness =       371.094 um  
     Al  
-    total count at the end if        4990.4589  
+    total count at the end if        4996.3456  
     limit in total count was     5000  
 ```
 
@@ -101,9 +101,9 @@ bestatt = foxsi4_best_attenuator(full_spectrum, energy_edges, cdte=1, al=1, loud
 ```
 this last line should print as a result:  
 ```
-	while loop stopped for thickness =       250.000 um  
+	while loop stopped for thickness =       246.094 um  
 	Al  
-	total count at the end if        5003.9064  
+	total count at the end if        4976.2513  
 	limit in total count was     5000  
 ```
 
@@ -113,9 +113,9 @@ bestatt = foxsi4_best_attenuator(full_spectrum, energy_edges, cmos=1, al=1, loud
 ```
 The result:  
 ```
-	while loop stopped for thickness =       239.258 um  
+	while loop stopped for thickness =       224.609 um  
 	Al  
-	total count at the end if        798.54748  
+	total count at the end if        802.40856  
 	limit in total count was      800  
 ```
 
@@ -125,9 +125,9 @@ bestatt = foxsi4_best_attenuator(full_spectrum, energy_edges, cmos=1, al=1, loud
 ```
 Expected result:  
 ```
-	while loop stopped for thickness =       182.617 um  
+	while loop stopped for thickness =       163.086 um  
 	Al  
-	total count at the end if        793.38454  
+	total count at the end if        800.27361  
 	limit in total count was      800  
 ```
 
@@ -137,9 +137,9 @@ bestatt = foxsi4_best_attenuator(full_spectrum, energy_edges, cdte=1, al=1, totc
 ```
 Expected result:  
 ```
-	while loop stopped for thickness =       173.828 um    
+	while loop stopped for thickness =       161.133 um    
 	Al  
-	total count at the end if        5021.3353    
+	total count at the end if        4994.4159
 	limit in total count was     5000  
 ```
 
