@@ -1,5 +1,9 @@
 PRO foxsi4_plot_effective_area, no_att = no_att, ylog = ylog, plot_total=plot_total, attenuation_ontop=attenuation_ontop, xlog=xlog
 
+  screen_dimensions = GET_SCREEN_SIZE(RESOLUTION=resolution)
+  window_xsize = fix(0.33*screen_dimensions[0])
+  window_ysize = fix(window_xsize*0.76)
+
   DEFAULT, no_att, 1
   DEFAULT, ylog, 1
   DEFAULT, plot_total, 1
@@ -78,9 +82,9 @@ PRO foxsi4_plot_effective_area, no_att = no_att, ylog = ylog, plot_total=plot_to
     + module_cdte_msfc_hres_att.eff_area_cm2 + module_cdte_J_hres_att.eff_area_cm2 + $
     module_CMOS_J_hres_att.eff_area_cm2 + module_CMOS_msfc_hres_att.eff_area_cm2
 
-  window, xsize = 1300, ysize = 1000
+  window, xs=window_xsize, ys=window_ysize
   sophie_Linecolors
-  th=2
+  th=3
   cs=2
   lst=2
   
@@ -135,8 +139,8 @@ PRO foxsi4_plot_effective_area, no_att = no_att, ylog = ylog, plot_total=plot_to
   ENDIF
   
   ;al_legend, ['CdTe+10shells','CdTe+HighResOpt', 'CdTe+JOpt','CMOS+JOpt','CMOS+HighResOpt'], textcol = [cdte_col,cmos_col], box=0, chars=cs, charth=th+1
-  al_legend, 'Mod.'+[' 0',' 1',' 2',' 3',' 4',' 5', ' 6'], textcol = module_col, box=0, chars=cs, charth=th+1
-  al_legend, 'Total effective area', textcol=0, box=0, chars=cs, charth=th+1, /right
+  al_legend, 'Mod.'+[' 0',' 1',' 2',' 3',' 4',' 5', ' 6'], textcol = module_col, box=0, chars=cs, charth=th
+  al_legend, 'Total effective area', textcol=0, box=0, chars=cs, charth=th, /right
   ;WRITE_PNG, 'foxsi4_effareas_all_total.png', TVRD(/TRUE)
 
 

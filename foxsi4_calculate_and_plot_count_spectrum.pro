@@ -43,6 +43,7 @@ PRO foxsi4_calculate_and_plot_count_spectrum, spectrum_structure, energy_edges=e
   ;   2019/10/28, SMusset (UMN), added the pinhole keyword
   ;   2020/09/10, SMusset (UoG), added the energy_resolution keyword
   ;   2020/09/20, SMusset (UoG), added the energy_bin keyword
+  ;   2020/10/06, SMusset (UoG), change plot display window size for compatibility with other devices
   ;-
 
   DEFAULT, window_ind, 1
@@ -50,6 +51,10 @@ PRO foxsi4_calculate_and_plot_count_spectrum, spectrum_structure, energy_edges=e
   DEFAULT, chars, 2
   DEFAULT, att_str, 'no att'
   DEFAULT, model, 1
+  
+  screen_dimensions = GET_SCREEN_SIZE(RESOLUTION=resolution)
+  window_xsize = fix(0.25*screen_dimensions[0])
+  window_ysize = fix(window_xsize/0.83)
   
   list_counts = list()
   
@@ -73,7 +78,7 @@ PRO foxsi4_calculate_and_plot_count_spectrum, spectrum_structure, energy_edges=e
   list_counts.add, countnth
 
   set_line_color
-  window, window_ind, xs=1000, ys=1200
+  window, window_ind, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=chars, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title=plot_title, psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2

@@ -1,5 +1,9 @@
 PRO foxsi4_proposal_figure, NUM=NUM, int_time=int_time, counting_stat=counting_stat, pinhole=pinhole, highres=highres, energy_resolution=energy_resolution
-
+  
+  screen_dimensions = GET_SCREEN_SIZE(RESOLUTION=resolution)
+  window_xsize = fix(0.25*screen_dimensions[0])
+  window_ysize = window_xsize
+  
   default, NUM, 1 ; figure number, 1 for M3 flare, 2 for HIC flare, 3 for C3 flare
   default, int_time, 10. ; seconds
   default, counting_stat, 0 ; set to 1 to add photon noise
@@ -105,7 +109,7 @@ PRO foxsi4_proposal_figure, NUM=NUM, int_time=int_time, counting_stat=counting_s
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
   fullspec = full_list_counts[0]
-  window, 4, xsize=1000, ysize=1000
+  window, 4, xsize=window_xsize, ysize=window_yxsize
   sophie_linecolors
   ; plot HXR spectrum
   plot, fullspec.energy_kev, fullspec.count_flux*int_time, /xlog, /ylog, xr=[4,25], /xstyle, yr=yr, background=1, xthick=th, ythick=th, charthi=th, chars=2.2, thick=th, psym=10, $
@@ -165,7 +169,7 @@ PRO foxsi4_proposal_figure, NUM=NUM, int_time=int_time, counting_stat=counting_s
     plot_name = 'foxsi4_'+goesclass+'_integrated_count_flux_cmos_jhighres_Al-'+al_attstr_cmos+'um'+eresstring+'.png', att_str = 'Al '+al_attstr_cmos+' um', list_counts=full_list_counts_cmos, int_time=int_time, counting_stat=counting_stat
 
   fullspec = full_list_counts[0]
-  window, 4, xsize=1000, ysize=1000
+  window, 4, xsize=window_xsize, ysize=window_xsize
   sophie_linecolors
   plot, fullspec.energy_kev, fullspec.count_flux*int_time, /xlog, /ylog, xr=[4,25], /xstyle, yr=yr, background=1, xthick=th, ythick=th, charthi=th, chars=2.2, thick=th, psym=10, $
     xtitle='Energy (keV)', ytitle=ytitle

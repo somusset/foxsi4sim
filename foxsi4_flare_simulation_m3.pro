@@ -45,7 +45,7 @@ PRO foxsi4_flare_simulation_m3, FP_spectrum, CS_spectrum, FULL_spectrum, energy_
  path = strmid(mypath, 0, sep)
  datadir = path+sep_char+'flare_data'+sep_char+'SK2013.20110224'+sep_char
 
- chars=3
+ chars=2.2
  window_ind = 0
 
  ;-------------------------------------------------

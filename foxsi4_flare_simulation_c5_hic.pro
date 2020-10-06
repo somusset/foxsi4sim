@@ -31,6 +31,7 @@ PRO foxsi4_flare_simulation_c5_hic, FP_spectrum, FP2_spectrum, CS_spectrum, FULL
   ;   2019/08/29, SMusset (UMN), initial release
   ;   2020/09/20, SMusset (UoG), changed path to typical flare parameters
   ;   2020/10/06, SMusset (UoG), changed path access to be compatible with Unix and Mac
+  ;   2020/10/06, SMusset (UoG), changed plot window size for compatibility with other devices
   ;   
   ; :Note:
   ;   It seems that this is not a C5 flare after all...
@@ -42,7 +43,10 @@ PRO foxsi4_flare_simulation_c5_hic, FP_spectrum, FP2_spectrum, CS_spectrum, FULL
   low_e_cutoff = 5. ; keV
 
   chars=2
-
+  screen_dimensions = GET_SCREEN_SIZE(RESOLUTION=resolution)
+  window_xsize = fix(0.3*screen_dimensions[0])
+  window_ysize = fix(window_xsize/0.8)
+  
   ;-------------------------------------------------
   ; Read the flare data
   ;-------------------------------------------------
@@ -112,12 +116,12 @@ PRO foxsi4_flare_simulation_c5_hic, FP_spectrum, FP2_spectrum, CS_spectrum, FULL
   xx = 53
   yy = 61
   window_ind=0
-  
+    
   fp_vth = reform(new_photonflux[xx,yy,*])
   fp_nonth = reform(nonthflux[xx,yy,*])
   IF plot EQ 1 THEN BEGIN
     set_line_color
-    window, window_ind, xsize=1200, ysize=1500
+    window, window_ind, xsize=window_xsize, ysize=window_ysize
     plot, energy_mean, fp_vth+fp_nonth, /xlog, /ylog, chars=chars, charth=3, thick=3, xth=2, yth=2, background=1, color=0, xtitle='Energy (keV)', ytitle='Photon flux [photon.cm!E-2!N.s!E-1!N.keV!E-1!N)]'
     oplot, energy_mean, fp_vth, thick=3, color=3, linestyle=5
     oplot, energy_mean, fp_nonth, thick=3, color=5, linestyle=5
@@ -141,7 +145,7 @@ PRO foxsi4_flare_simulation_c5_hic, FP_spectrum, FP2_spectrum, CS_spectrum, FULL
   fp_nonth = reform(nonthflux[xx,yy,*])
   IF plot EQ 1 THEN BEGIN
     set_line_color
-    window, window_ind, xsize=1200, ysize=1500
+    window, window_ind, xsize=window_xsize, ysize=window_ysize
     plot, energy_mean, fp_vth+fp_nonth, /xlog, /ylog, chars=chars, charth=3, thick=3, xth=2, yth=2, background=1, color=0, xtitle='Energy (keV)', ytitle='Photon flux [photon.cm!E-2!N.s!E-1!N.keV!E-1!N)]'
     oplot, energy_mean, fp_vth, thick=3, color=3, linestyle=5
     oplot, energy_mean, fp_nonth, thick=3, color=5, linestyle=5
@@ -164,7 +168,7 @@ PRO foxsi4_flare_simulation_c5_hic, FP_spectrum, FP2_spectrum, CS_spectrum, FULL
   fp_nonth = reform(nonthflux[xx,yy,*])
   IF plot EQ 1 THEN BEGIN
     set_line_color
-    window, window_ind, xsize=1200, ysize=1500
+    window, window_ind, xsize=window_xsize, ysize=window_ysize
     plot, energy_mean, fp_vth+fp_nonth, /xlog, /ylog, chars=chars, charth=3, thick=3, xth=2, yth=2, background=1, color=0, xtitle='Energy (keV)', ytitle='Photon flux [photon.cm!E-2!N.s!E-1!N.keV!E-1!N)]'
     oplot, energy_mean, fp_vth, thick=3, color=3, linestyle=5
     oplot, energy_mean, fp_nonth, thick=3, color=5, linestyle=5
@@ -187,7 +191,7 @@ PRO foxsi4_flare_simulation_c5_hic, FP_spectrum, FP2_spectrum, CS_spectrum, FULL
   ENDFOR
   IF plot EQ 1 THEN BEGIN
     set_line_color
-    window, window_ind, xsize=1200, ysize=1500
+    window, window_ind, xsize=window_xsize, ysize=window_ysize
     plot, energy_mean, fp_vth+fp_nonth, /xlog, /ylog, chars=chars, charth=3, thick=3, xth=2, yth=2, background=1, color=0, xtitle='Energy (keV)', ytitle='Photon flux [photon.cm!E-2!N.s!E-1!N.keV!E-1!N)]'
     oplot, energy_mean, fp_vth, thick=3, color=3, linestyle=5
     oplot, energy_mean, fp_nonth, thick=3, color=5, linestyle=5

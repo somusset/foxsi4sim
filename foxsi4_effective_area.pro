@@ -60,10 +60,15 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
   ;   2019/10/28, SMusset (UMN), added the pinhole attenuator option
   ;   2020/09/16, SMusset (UoG), change path to file and update documentation
   ;   2020/10/06, SMusset (UoG), change '\' to '/' in path for compatibility with Mac and Unix
+  ;   2020/10/06, SMusset (UoG), change plot display window size for compatibility with other device
   ;
   ; :to be done:
   ;   Currently nothing is plotted if the plot keyword is set to 1. Maybe we do not need the plot option anymore.
   ;-
+
+  screen_dimensions = GET_SCREEN_SIZE(RESOLUTION=resolution)
+  window_xsize = fix(0.3*screen_dimensions[0])
+  window_ysize = fix(window_xsize*0.9)
 
   DEFAULT, shells, 10
   DEFAULT, al_um, 0 ; microns
@@ -126,7 +131,7 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
   
     set_line_color
     IF plot EQ 1 THEN BEGIN
-      window, 0, xsize=1200, ysize=1100
+      window, 0, xsize=window_xsize, ysize=window_ysize
       plot, energy, eff_area, /xlog, /ylog, thick=2, color=0, background=1, chars=2, charth=2, xth=2, yth=2, linestyle=0, xtitle='Energy (keV)', ytitle='Effective area (cm2)', yr=[1d-1,1d2], /xsty
     ENDIF
 

@@ -35,7 +35,7 @@ PRO foxsi4_flare_simulation_c3, FP_spectrum, FP2_spectrum, CS_spectrum, FULL_spe
   DEFAULT, plot, 1
   DEFAULT, save, 0
 
-  chars=3
+  chars=2.2
 
   ;-------------------------------------------------
   ; Define energy input

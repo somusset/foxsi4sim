@@ -3,6 +3,10 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
 ; goes class is a string style 'c5'
 
   DEFAULT, save, 0
+  
+  screen_dimensions = GET_SCREEN_SIZE(RESOLUTION=resolution)
+  window_xsize = fix(0.25*screen_dimensions[0])
+  window_ysize = fix(window_xsize*1.2)
 
   ;------------------------------------------------------------------------------------------------------------------------------
   ; SIMULATE PHOTON FLUX
@@ -14,7 +18,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   phflux = foxsi4_flare_simulation_from_goesclass(goesflux, energy_in=energy_in, energy_out=energy_out)
 
   set_line_color
-  window, 0, xs=1000, ys=1200
+  window, 0, xs=window_xsize, ys=window_ysize
   plot, phflux.energy_kev, phflux.photon_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Photon flux, '+goesclass+' flare', psym=10, xtitle='Energy (keV)', ytitle='Photons/s/cm2/keV'
   oplot, phflux.energy_kev, phflux.thermal_flux, thick=3, color=3, linestyle=2
@@ -35,7 +39,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   countnth = foxsi4_flare_response_simulation(phflux.energy_kev, phflux.nonthermal_FLUX, cdte=1, energy_edges=energy_in)
 
   set_line_color
-  window, 1, xs=1000, ys=1200
+  window, 1, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Count flux ('+goesclass+') CdTe + module 6', psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1d-2,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2
@@ -59,7 +63,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   countnth = foxsi4_flare_response_simulation(phflux.energy_kev, phflux.nonthermal_FLUX, cdte=1, energy_edges=energy_in, al_um=al_um)
 
   set_line_color
-  window, 2, xs=1000, ys=1200
+  window, 2, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Count flux ('+goesclass+') CdTe + module 6', psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1d-2,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2
@@ -83,7 +87,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   countnth = foxsi4_flare_response_simulation(phflux.energy_kev, phflux.nonthermal_FLUX, cdte=1, energy_edges=energy_in, be_um=be_um)
 
   set_line_color
-  window, 3, xs=1000, ys=1200
+  window, 3, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Count flux ('+goesclass+') CdTe + module 6', psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1d-2,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2
@@ -107,7 +111,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   countnth = foxsi4_flare_response_simulation(phflux.energy_kev, phflux.nonthermal_FLUX, cmos=1, high_res_j_optic=1, energy_edges=energy_in)
 
   set_line_color
-  window, 4, xs=1000, ys=1200
+  window, 4, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Count flux ('+goesclass+') CMOS + J-EF', psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1d-2,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2
@@ -130,7 +134,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   countnth = foxsi4_flare_response_simulation(phflux.energy_kev, phflux.nonthermal_FLUX, cmos=1, high_res_j_optic=1, energy_edges=energy_in, al_um=al_um)
 
   set_line_color
-  window, 5, xs=1000, ys=1200
+  window, 5, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Count flux ('+goesclass+') CMOS + J-EF', psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1d-2,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2
@@ -153,7 +157,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   countnth = foxsi4_flare_response_simulation(phflux.energy_kev, phflux.nonthermal_FLUX, cmos=1, high_res_j_optic=1, energy_edges=energy_in, be_um=be_um)
 
   set_line_color
-  window, 6, xs=1000, ys=1200
+  window, 6, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Count flux ('+goesclass+') CMOS + J-EF', psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1d-2,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2
@@ -176,7 +180,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   countnth = foxsi4_flare_response_simulation(phflux.energy_kev, phflux.nonthermal_FLUX, cdte=1, high_res_j_optic=1, energy_edges=energy_in)
 
   set_line_color
-  window, 7, xs=1000, ys=1200
+  window, 7, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Count flux ('+goesclass+') CdTe + J-EF', psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1d-2,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2
@@ -200,7 +204,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   countnth = foxsi4_flare_response_simulation(phflux.energy_kev, phflux.nonthermal_FLUX, cdte=1, high_res_j_optic=1, energy_edges=energy_in, al_um=al_um)
 
   set_line_color
-  window, 8, xs=1000, ys=1200
+  window, 8, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Count flux ('+goesclass+') CdTe + J-EF', psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1d-2,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2
@@ -224,7 +228,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   countnth = foxsi4_flare_response_simulation(phflux.energy_kev, phflux.nonthermal_FLUX, CdTe=1, high_res_j_optic=1, energy_edges=energy_in, be_um=be_um)
 
   set_line_color
-  window, 9, xs=1000, ys=1200
+  window, 9, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Count flux ('+goesclass+') CdTe + J-EF', psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1d-2,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2
@@ -248,7 +252,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   countnth = foxsi4_flare_response_simulation(phflux.energy_kev, phflux.nonthermal_FLUX, cdte=1, msfc_high_res=1, energy_edges=energy_in)
 
   set_line_color
-  window, 10, xs=1000, ys=1200
+  window, 10, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Count flux ('+goesclass+') CdTe + MSFC high res', psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1d-2,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2
@@ -272,7 +276,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   countnth = foxsi4_flare_response_simulation(phflux.energy_kev, phflux.nonthermal_FLUX, cdte=1, msfc_high_res=1, energy_edges=energy_in, al_um=al_um)
 
   set_line_color
-  window, 11, xs=1000, ys=1200
+  window, 11, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Count flux ('+goesclass+') CdTe + MSFC high res', psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1d-2,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2
@@ -296,7 +300,7 @@ PRO foxsi4_typical_flare_simulation, goesflux, goesclass, save=save
   countnth = foxsi4_flare_response_simulation(phflux.energy_kev, phflux.nonthermal_FLUX, CdTe=1, msfc_high_res=1, energy_edges=energy_in, be_um=be_um)
 
   set_line_color
-  window, 12, xs=1000, ys=1200
+  window, 12, xs=window_xsize, ys=window_ysize
   plot, count.energy_kev, count.count_flux, chars=3, thick=3, charth=3, xth=2, yth=2, background=1, color=0, $
     /xlog, /ylog, /xsty, title='Count flux ('+goesclass+') CdTe + MSFC high res', psym=10, xtitle='Energy (keV)', ytitle='Counts/s/keV', yr=[1d-2,1d8]
   oplot, countth.energy_kev, countth.count_flux, thick=3, color=3, linestyle=2
