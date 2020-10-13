@@ -61,9 +61,9 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
   ;   2020/09/16, SMusset (UoG), change path to file and update documentation
   ;   2020/10/06, SMusset (UoG), change '\' to '/' in path for compatibility with Mac and Unix
   ;   2020/10/06, SMusset (UoG), change plot display window size for compatibility with other device
+  ;   2020/10/12, SMusset (UoG), invert order to have blanket transmission before detector eff
   ;
   ; :to be done:
-  ;   Currently nothing is plotted if the plot keyword is set to 1. Maybe we do not need the plot option anymore.
   ;-
 
   screen_dimensions = GET_SCREEN_SIZE(RESOLUTION=resolution)
@@ -121,19 +121,41 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
   energy = area.energy_kev
   eff_area = area.eff_area_cm2
   
+  eff_area_orig = interpol(eff_area, energy, energy_out)
+  eff_area = eff_area_orig
+
+  set_line_color
+  IF plot EQ 1 THEN BEGIN
+    window, 0, xsize=window_xsize, ysize=window_ysize
+    plot, energy, eff_area, /xlog, /ylog, thick=2, color=0, background=1, chars=2, charth=2, xth=2, yth=2, linestyle=0, xtitle='Energy (keV)', ytitle='Effective area (cm2)', yr=[1d-1,1d2], /xsty
+  ENDIF
+  
+  ;------------------------------------------------
+  ; Blanketing transmission
+  ;------------------------------------------------
+
+  ;add in the various materials already in the optical path
+  IF NOT keyword_set(nopath) THEN BEGIN
+    optical_path = foxsi4_get_shutter(energy_arr = energy_out, data_dir = data_dir, al_um=al_um, be_um=be_um, poly_um=poly_um)
+    eff_area = eff_area*optical_path.shut_eff
+  ENDIF
+
+  ; special case for the pinhole attenuator: use attenuation factor given by Dan
+  IF pinhole EQ 1 THEN BEGIN
+    res = foxsi4_get_pinhole_attenuation_factor(energy_arr = energy_out)
+    eff_area = eff_area*res.att_factor
+  ENDIF
+
+  IF plot EQ 1 THEN BEGIN
+    oplot, energy, eff_area, thick=2, color=0, linestyle=3
+    al_legend, ['optics','optics+det','optics+det+path'], linestyle=[0,2,3], thick=2, chars=2, charth=2, box=0, /right, linsize=0.4
+  ENDIF
+
   ;------------------------------------------------
   ; get the detector efficiency, including low-energy cutoff curve
   ;------------------------------------------------
 
   IF no_det NE 1 THEN BEGIN
-    eff_area_orig = interpol(eff_area, energy, energy_out)
-    eff_area = eff_area_orig
-  
-    set_line_color
-    IF plot EQ 1 THEN BEGIN
-      window, 0, xsize=window_xsize, ysize=window_ysize
-      plot, energy, eff_area, /xlog, /ylog, thick=2, color=0, background=1, chars=2, charth=2, xth=2, yth=2, linestyle=0, xtitle='Energy (keV)', ytitle='Effective area (cm2)', yr=[1d-1,1d2], /xsty
-    ENDIF
 
     IF cdte EQ 1 THEN BEGIN
       IF loud EQ 1 THEN print, 'theoretical QE for CdTe with '+thickness_str+'um thickness'
@@ -175,27 +197,7 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
     IF plot EQ 1 THEN oplot, energy, eff_area, thick=2, color=0, linestyle=2
   ENDIF
   
-  ;------------------------------------------------
-  ; Blanketing transmission
-  ;------------------------------------------------
-
-  ;add in the various materials already in the optical path
-  IF NOT keyword_set(nopath) THEN BEGIN
-    optical_path = foxsi4_get_shutter(energy_arr = energy_out, data_dir = data_dir, al_um=al_um, be_um=be_um, poly_um=poly_um)
-    eff_area = eff_area*optical_path.shut_eff
-  ENDIF
-
-  ; special case for the pinhole attenuator: use attenuation factor given by Dan
-  IF pinhole EQ 1 THEN BEGIN
-    res = foxsi4_get_pinhole_attenuation_factor(energy_arr = energy_out)
-    eff_area = eff_area*res.att_factor
-  ENDIF
-
-  IF plot EQ 1 THEN BEGIN
-    oplot, energy, eff_area, thick=2, color=0, linestyle=3
-    al_legend, ['optics','optics+det','optics+det+path'], linestyle=[0,2,3], thick=2, chars=2, charth=2, box=0, /right, linsize=0.4
-  ENDIF
-
+ 
 
   IF keyword_set(PLOT) THEN BEGIN
 
