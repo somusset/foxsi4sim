@@ -9,8 +9,8 @@ FUNCTION foxsi4_flare_response_simulation, energy_arr, photon_flux, shells=shell
   ; :description:
   ;    This procedure takes a photon flux and its corresponding the energy array and calculate the count flux for FOXSI-4 for
   ;    different possibilities in optic module, detector and attenuator combination. This is done with the following steps:
-  ;    - gaussian convolution of the photon flux with energy resolution of the detector
   ;    - calculation of the effective area
+  ;    - gaussian convolution of the count flux with energy resolution of the detector
   ;    - energy binning
   ;    - addition of Poisson noise if needed
   ;    - error estimation on the spectrum
