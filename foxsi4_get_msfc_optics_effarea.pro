@@ -28,6 +28,7 @@ FUNCTION foxsi4_get_msfc_optics_effarea, energy_arr=energy_arr, plot=plot, _extr
   ;   2019/10/30, SMusset (UMN), change the effective area to be the sum of the two inner shells (instead of the 3 inner shells)
   ;   2020/09/16, SMusset (UoG), change doc
   ;   2020/10/06, SMusset (UoG), change path access + make it compatible with Mac and Unix
+  ;   2022/05/11, Y.Zhang (UMN), update data file
   ;   
   ; :to be done:
   ;   
@@ -42,7 +43,9 @@ FUNCTION foxsi4_get_msfc_optics_effarea, energy_arr=energy_arr, plot=plot, _extr
   mypath = routine_filepath()
   sep = strpos(mypath,sep_char,/reverse_search)
   path = strmid(mypath, 0, sep)
-  file = path+'/optics_data/3Inner_EA_EPDL97.csv'
+  file = path+'/optics_data/3Inner_EA_EPDL97_14AA.csv'  ;roughness 14\AA, using EPDL theoretical model
+  ; file = path+'/optics_data/3Inner_EA_Windt_15AA.csv'  ;roughness 15\AA, using Windt model
+  ; Note: above roughnesses correspond to the values that best fit lab data in the 10-15 keV energy range
 
   opt = read_csv(file)
 
