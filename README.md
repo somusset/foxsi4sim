@@ -70,9 +70,15 @@ The attenuation for FOXSI4 can be chosen using the function `foxsi4_best_attenua
 
 ### Wrappers
 
-Different routines, which are not well commented, exists to produce various plots: `foxsi4_proposal_figures` is the one to plot different versions of the real flare spectra that have been shown in the FOXSI4 proposal. `foxsi4_real_flare_simulation` is probably doing something similar but is less up to date. `foxsi4_typical_flare_simulation` is focusing on a few selected GOES classes, as well as `foxsi4_flare_simulations`, and I do not remember which one of those two is the most up-to-date or interesting.
+* `foxsi4_proposal_figures`: plot different versions of the real flare spectra that have been shown in the FOXSI-4 proposal.
+* `foxsi4_real_flare_simulation`: similar to `foxsi4_proposal_figures` but less up to date.
+* `foxsi4_goes_flare_plot`: generate typical flare spectra for a few selected GOES classes.
+* `foxsi4_typical_flare_simulation`: similar to `foxsi4_goes_flare_plot` but less up to date.
+* `foxsi4_flare_simulations`: similar to `foxsi4_goes_flare_plot` but less up to date.
+* `foxsi4_plot_effective_area`: plot the effective area for the seven modules with combination of optics and detectors that were considered.
+* `foxsi4_simulation_ospex_singledet`: generate simulated count spectrum for a single detector (CdTe/CMOS) and try photon spectrum reconstruction through spectral fitting in OSPEX.
+* `foxsi4_simulation_ospex_comb`: photon spectrum reconstruction with OSPEX using a combination of CdTe and CMOS detectors.
 
-The wrapper `foxsi4_plot_effective_area` will plot the effective area for the seven modules with combination of optics and detectors that were considered.
 
 ## Example of utilisation of the routines
  
