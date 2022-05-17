@@ -11,7 +11,7 @@ FUNCTION foxsi4_flare_simulation_from_goesclass, peak_flux, energy_in=energy_in,
   ;    seen at Earth in units of photon/(cm2 s keV)
   ;
   ; :inputs:
-  ;   peak_flux, float, the goes flux in ??? units ???
+  ;   peak_flux, float, the goes flux in W m^-2
   ;
   ; :outputs:
   ;   photon_flux, fltarr, spectrum of the photon flux in photon/(cm2 s keV)
