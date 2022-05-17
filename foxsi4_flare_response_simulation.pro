@@ -65,6 +65,11 @@ FUNCTION foxsi4_flare_response_simulation, energy_arr, photon_flux, shells=shell
   ;   2019/10/28, SMusset (UMN), added option for pinhole attenuator
   ;   2020/09/10, SMusset (UoG), added keyword to change energy resolution
   ;   2020/09/16, SMusset (UoG), added keyword to change energy binning + updated documentation
+  ;   2022/05/11, Y.Zhang (UMN), switch order to calculate Possion noise after energy binning; 
+  ;                              minor changes of the output energy bin edge locations for CdTe;
+  ;                              minor changes in the Possion noise part to avoid getting the exact same values from the random
+  ;                              number generator (this only happens occasionally, unknown reason, maybe it's an IDL bug?);
+  ;                              small adjustments to plots
   ;   
   ; :to be done:
   ;   
@@ -92,11 +97,11 @@ FUNCTION foxsi4_flare_response_simulation, energy_arr, photon_flux, shells=shell
   
   en0 = get_edges(energy_arr, /mean)
   width_e = get_edges(energy_arr, /width)
-  val0 = en0[0] - abs(en0[0] - energy_arr[0])
-  val1 = en0[-1] + abs(en0[-1] - energy_arr[-1])
+  val0 = en0[0] - 2*abs(en0[0] - energy_arr[0])
+  val1 = en0[-1] + 2*abs(en0[-1] - energy_arr[-1])
   en1 = [val0, en0, val1]
   DEFAULT, energy_edges, en1
-  
+
   ;----------------------------------------------------------------------------------------------
   ; get effective area (optics+detector efficiency+blanket and shutter)
   ;----------------------------------------------------------------------------------------------
@@ -109,17 +114,6 @@ FUNCTION foxsi4_flare_response_simulation, energy_arr, photon_flux, shells=shell
   input_flux = count_flux
   sigma = energy_resolution/mean(width_e)/(2.*sqrt(2*alog(2)))
   count_flux = GAUSS_SMOOTH(input_flux, sigma, kernel=kernel, /edge_truncate)
-
-  ;----------------------------------------------------------------------------------------------
-  ; add Poisson noise
-  ;----------------------------------------------------------------------------------------------
-  IF counting_stat EQ 1 THEN BEGIN
-    new_flux = count_flux*int_time
-    FOR k=0, n_elements(count_flux)-1 DO BEGIN
-      IF count_flux[k] GT 0 THEN new_flux[k] = randomu(seed, 1, poisson=count_flux[k]*int_time,/double) ELSE new_flux[k] = count_flux[k]*int_time
-    ENDFOR
-    count_flux = new_flux/int_time
-  ENDIF
   
   ;----------------------------------------------------------------------------------------------
   ; I am not sure about this next part:
@@ -131,19 +125,38 @@ FUNCTION foxsi4_flare_response_simulation, energy_arr, photon_flux, shells=shell
     photon_flux_sel = photon_flux[sel]
     count_flux_sel = count_flux[sel]
     energy_sel = energy_arr[sel]
+    bin_width_in = mean(get_edges(energy_sel,/width))
     en_limits = minmax(energy_sel)
-    energy_edges_out = indgen((en_limits[1]-en_limits[0])/energy_bin)*energy_bin+en_limits[0] ; assuming energy bin of 0.8 keV - the default value for cdte
+    energy_edges_out = indgen((en_limits[1]-en_limits[0])/energy_bin)*energy_bin+en_limits[0]-0.5*bin_width_in 
     energy_out = get_edges(energy_edges_out,/mean)
     photon_flux_out = interpol(photon_flux_sel, energy_sel, energy_out)
     count_flux_out = interpol(count_flux_sel, energy_sel, energy_out)
   ENDIF ELSE BEGIN
     en_limits = minmax(energy_arr)
-    energy_edges_out = indgen((en_limits[1]-en_limits[0])/energy_bin)*energy_bin+en_limits[0] ; assuming energy bin of 0.2 keV - the default value for cmos
+    energy_edges_out = indgen((en_limits[1]-en_limits[0])/energy_bin)*energy_bin+en_limits[0] 
     energy_out = get_edges(energy_edges_out,/mean)
     photon_flux_out = interpol(photon_flux, energy_arr, energy_out)
     count_flux_out = interpol(count_flux, energy_arr, energy_out)
   ENDELSE
-  
+
+  ;----------------------------------------------------------------------------------------------
+  ; add Poisson noise
+  ;----------------------------------------------------------------------------------------------
+  IF counting_stat EQ 1 THEN BEGIN
+    new_flux = count_flux*int_time
+    FOR k=0, n_elements(count_flux_out)-1 DO BEGIN
+      IF count_flux_out[k] GT 0 THEN Begin
+        new_flux[k] = randomu(seed, 1, poisson=count_flux_out[k]*int_time,/double)
+        seed = !NULL    ; This line was added to prevent the issue that Randomu occasionally gives the exact same outputs
+                        ; for some runs. In principle, it should give different values each time (and it does so most of 
+                        ; the time), but when running simulations repeatedly, sometimes it repeats the values of last
+                        ; run. Adding this line seems help; however, this issue may/may not be a universal one regarding
+                        ; different IDL versions and operating systems, and the solution may/may not be applicable to all.
+      ENDIF ELSE  new_flux[k] = count_flux_out[k]*int_time
+    ENDFOR
+    count_flux = new_flux/int_time
+  ENDIF
+
   ;----------------------------------------------------------------------------------------------
   ; calculation of errors on the count flux and count rate
   ;----------------------------------------------------------------------------------------------
@@ -165,9 +178,9 @@ FUNCTION foxsi4_flare_response_simulation, energy_arr, photon_flux, shells=shell
     th=3
     window,1
     set_line_color
-    !p.multi = [0,2,2]
-    plot, energy_out, photon_flux_out, /xlog, /ylog, chars=2, thick=th, xth=th, yth=th, charth=th, title='Photon flux'    
-    plot, energy_out, count_flux_out, /xlog, /ylog, chars=2, thick=th, xth=th, yth=th, charth=th, title='Count flux'
+    !p.multi = [0,2,1]
+    plot, energy_out, photon_flux_out, /xlog, /ylog, chars=2, thick=th, xth=th, yth=th, charth=th, title='Photon flux', background=1, color=0    
+    plot, energy_out, count_flux_out, /xlog, /ylog, chars=2, thick=th, xth=th, yth=th, charth=th, title='Count flux', background=1, color=0    
     !p.multi = 0
   ENDIF
   
