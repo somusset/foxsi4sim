@@ -11,8 +11,10 @@ liste = list()
 WHILE NOT EOF(lun) DO BEGIN
   readf, lun, line
   array = [array, line]
-  sptline = strsplit(line,/extract)
-  liste.add, sptline
+  IF strcmp(line,'') EQ 0 THEN BEGIN 
+    sptline = strsplit(line,/extract)
+    liste.add, sptline
+  ENDIF
 ENDWHILE
 
 tab = liste.toarray()
