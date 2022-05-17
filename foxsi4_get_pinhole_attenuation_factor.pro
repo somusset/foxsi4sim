@@ -24,6 +24,7 @@ FUNCTION foxsi4_get_pinhole_attenuation_factor, energy_arr=energy_arr
   ;   2019/10/28, SMusset (UMN), initial release
   ;   2020/09/16, SMusset (UoG), change path to file
   ;   2020/10/06, SMusset (UoG), change path to file and make it compatible with Unix and Mac
+  ;   2022/05/11, Y.Zhang (UMN), update data file; add option to read *.csv type file
   ;
   ; :to be done:
   ;-
@@ -34,11 +35,17 @@ FUNCTION foxsi4_get_pinhole_attenuation_factor, energy_arr=energy_arr
   sep = strpos(mypath,sep_char,/reverse_search)
   path = strmid(mypath, 0, sep)
 
-  file = path+'/material_data/pinhole_attenuation_factor.txt'
-  read_list_txt, file=file, tab=tab
-
-  energy_att_kev = double(reform(tab[*,0]))
-  factor_att = double(reform(tab[*,1]))
+  file =  path+'/material_data/foxsi4_perforated_attenuator_em2_transmission.csv'
+  IF strmatch(file, '*.txt', /fold_case) eq 1 THEN BEGIN
+    read_list_txt, file=file, tab=tab
+    energy_att_kev = double(reform(tab[*,0]))
+    factor_att = double(reform(tab[*,1]))
+  ENDIF
+  IF strmatch(file, '*.csv', /fold_case) eq 1 THEN BEGIN
+    opt = read_csv(file)
+    energy_att_kev = opt.field1
+    factor_att = opt.field2
+  ENDIF
   
   IF keyword_set(energy_arr) THEN BEGIN
     factor = interpol(factor_att, energy_att_kev, energy_arr)
