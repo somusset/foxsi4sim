@@ -62,6 +62,9 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
   ;   2020/10/06, SMusset (UoG), change '\' to '/' in path for compatibility with Mac and Unix
   ;   2020/10/06, SMusset (UoG), change plot display window size for compatibility with other device
   ;   2020/10/12, SMusset (UoG), invert order to have blanket transmission before detector eff
+  ;   2022/05/11, Y.Zhang (UMN), bug fix: move the CMOS pre-filter material to the blanket transmission part 
+  ;                                       so that it can be properly taken into account
+  ;   2022/05/26, Y.Zhang (UMN), update the thickness of CMOS
   ;
   ; :to be done:
   ;-
@@ -83,7 +86,7 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
   DEFAULT, plot, 0
   DEFAULT, loud, 1
   DEFAULT, no_det, 0
-  IF CMOS EQ 1 THEN DEFAULT, det_thick, 10. ELSE DEFAULT, det_thick, 500. ; microns
+  IF CMOS EQ 1 THEN DEFAULT, det_thick, 25. ELSE DEFAULT, det_thick, 500. ; microns
 
   energy_out = energy_arr
   thickness_str = strtrim(string(round(det_thick)),2)
@@ -130,13 +133,18 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
     plot, energy, eff_area, /xlog, /ylog, thick=2, color=0, background=1, chars=2, charth=2, xth=2, yth=2, linestyle=0, xtitle='Energy (keV)', ytitle='Effective area (cm2)', yr=[1d-1,1d2], /xsty
   ENDIF
   
-  ;------------------------------------------------
-  ; Blanketing transmission
-  ;------------------------------------------------
+  ;---------------------------------------------------------------------
+  ; Blanketing transmission (the CMOS pre-filter is also included here)
+  ;---------------------------------------------------------------------
 
   ;add in the various materials already in the optical path
   IF NOT keyword_set(nopath) THEN BEGIN
-    optical_path = foxsi4_get_shutter(energy_arr = energy_out, data_dir = data_dir, al_um=al_um, be_um=be_um, poly_um=poly_um)
+    IF cmos EQ 1 THEN BEGIN
+      IF loud EQ 1 THEN print, 'adding 0.45 um of Al and 2 um of poly in front of CMOS'  ; adding CMOS pre-filter
+      optical_path = foxsi4_get_shutter(energy_arr = energy_out, data_dir = data_dir, al_um=al_um+0.45, be_um=be_um, poly_um=poly_um+2.)
+    ENDIF ELSE BEGIN
+      optical_path = foxsi4_get_shutter(energy_arr = energy_out, data_dir = data_dir, al_um=al_um, be_um=be_um, poly_um=poly_um)
+    ENDELSE
     eff_area = eff_area*optical_path.shut_eff
   ENDIF
 
@@ -180,12 +188,9 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
          eff_area = eff_area*elec
     ENDIF ELSE BEGIN
       IF cmos EQ 1 THEN BEGIN
-        IF loud EQ 1 THEN  print, 'efficiency for thick CMOS is theoretical: absorption of '+thickness_str+'microns of Si'
+        IF loud EQ 1 THEN  print, 'efficiency for thick CMOS is theoretical: absorption of '+thickness_str+' microns of Si'
         det_eff = get_foxsi_deteff(energy_arr = energy_out, det_thick = det_thick, type = 'si', /no_let)
         eff_area = eff_area*det_eff.det_eff
-        IF loud EQ 1 THEN print, 'adding 0.45 um of Al and 2 um of poly in front'
-        al_um = al_um+0.45
-        poly_um = poly_um+2.
       ENDIF ELSE BEGIN
         IF loud EQ 1 THEN print, 'Efficiency for Silicon is calculated using det 102'
         let_file = 'efficiency_det102_avg.sav'

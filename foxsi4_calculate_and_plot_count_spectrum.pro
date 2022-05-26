@@ -1,6 +1,6 @@
 PRO foxsi4_calculate_and_plot_count_spectrum, spectrum_structure, energy_edges=energy_edges, window_ind=window_ind, cdte=cdte, cmos=cmos, $
   al_um=al_um, be_um=be_um, pinhole=pinhole, counting_stat=counting_stat, int_time=int_time, cea_let=cea_let, det_thick=det_thick, loweth=loweth, $
-  energy_resolution=energy_resolution, energy_bin=energy_bin, $
+  energy_resolution=energy_resolution, energy_bin=energy_bin, no_det=no_det, $
   high_res_j_optic=high_res_j_optic, msfc_high_res=msfc_high_res, list_counts=list_counts, model=model, $
   plot_title=plot_title, plot_legend=plot_legend, plot_name=plot_name, att_str=att_str, save=save, chars=chars
 
@@ -44,6 +44,7 @@ PRO foxsi4_calculate_and_plot_count_spectrum, spectrum_structure, energy_edges=e
   ;   2020/09/10, SMusset (UoG), added the energy_resolution keyword
   ;   2020/09/20, SMusset (UoG), added the energy_bin keyword
   ;   2020/10/06, SMusset (UoG), change plot display window size for compatibility with other devices
+  ;   2022/05/11, Y.Zhang (UMN), added the no_det keyword
   ;-
 
   DEFAULT, window_ind, 1
@@ -60,7 +61,7 @@ PRO foxsi4_calculate_and_plot_count_spectrum, spectrum_structure, energy_edges=e
   
   count = foxsi4_flare_response_simulation(spectrum_structure.energy_kev, spectrum_structure.PHOTON_FLUX, cdte=cdte, cmos=cmos, $
     al_um=al_um, be_um=be_um, pinhole=pinhole, counting_stat=counting_stat, int_time=int_time, cea_let=cea_let, det_thick=det_thick, loweth=loweth, energy_resolution=energy_resolution, energy_bin=energy_bin, $
-    energy_edges=energy_edges, high_res_j_optic=high_res_j_optic, msfc_high_res=msfc_high_res)
+    energy_edges=energy_edges, high_res_j_optic=high_res_j_optic, msfc_high_res=msfc_high_res, no_det=no_det)
   list_counts.add, count
   totcount = total(count.count_Rate)
   
@@ -70,11 +71,11 @@ PRO foxsi4_calculate_and_plot_count_spectrum, spectrum_structure, energy_edges=e
   ENDIF
   countth = foxsi4_flare_response_simulation(spectrum_structure.energy_kev, spectrum_structure.thermal_FLUX, cdte=cdte, cmos=cmos, $
     al_um=al_um, be_um=be_um, pinhole=pinhole, counting_stat=counting_statistics, int_time=intg_time, cea_let=cea_let, det_thick=det_thick, loweth=loweth, energy_resolution=energy_resolution, energy_bin=energy_bin, $
-    energy_edges=energy_edges, high_res_j_optic=high_res_j_optic, msfc_high_res=msfc_high_res)
+    energy_edges=energy_edges, high_res_j_optic=high_res_j_optic, msfc_high_res=msfc_high_res, no_det=no_det)
   list_counts.add, countth
   countnth = foxsi4_flare_response_simulation(spectrum_structure.energy_kev, spectrum_structure.nonthermal_FLUX, cdte=cdte, cmos=cmos, $
     al_um=al_um, be_um=be_um, pinhole=pinhole, counting_stat=counting_statistics, int_time=intg_time, cea_let=cea_let, det_thick=det_thick, loweth=loweth, energy_resolution=energy_resolution, energy_bin=energy_bin, $
-    energy_edges=energy_edges, high_res_j_optic=high_res_j_optic, msfc_high_res=msfc_high_res)
+    energy_edges=energy_edges, high_res_j_optic=high_res_j_optic, msfc_high_res=msfc_high_res, no_det=no_det)
   list_counts.add, countnth
 
   set_line_color
