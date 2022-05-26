@@ -70,6 +70,7 @@ FUNCTION foxsi4_flare_response_simulation, energy_arr, photon_flux, shells=shell
   ;                              minor changes in the Possion noise part to avoid getting the exact same values from the random
   ;                              number generator (this only happens occasionally, unknown reason, maybe it's an IDL bug?);
   ;                              small adjustments to plots
+  ;   2022/05/26, Y.Zhang (UMN), update the detector thickness of CMOS
   ;   
   ; :to be done:
   ;   
@@ -84,7 +85,7 @@ FUNCTION foxsi4_flare_response_simulation, energy_arr, photon_flux, shells=shell
   DEFAULT, shells, 10
   DEFAULT, loweth, 3. ; keV ; low energy threshold used to not plot the low energy data for CdTe
   DEFAULT, counting_stat, 0 
-  IF CMOS EQ 1 THEN DEFAULT, det_thick, 10. ELSE DEFAULT, det_thick, 500. ; microns
+  IF CMOS EQ 1 THEN DEFAULT, det_thick, 25. ELSE DEFAULT, det_thick, 500. ; microns
   IF CMOS EQ 1 THEN DEFAULT, energy_resolution, 0.2 ELSE DEFAULT, energy_resolution, 0.8
   IF CMOS EQ 1 THEN DEFAULT, energy_bin, 0.2 ELSE DEFAULT, energy_bin, 0.8
   DEFAULT, cea_let, 0
