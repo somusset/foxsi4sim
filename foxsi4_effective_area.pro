@@ -64,6 +64,7 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
   ;   2020/10/12, SMusset (UoG), invert order to have blanket transmission before detector eff
   ;   2022/05/11, Y.Zhang (UMN), bug fix: move the CMOS pre-filter material to the blanket transmission part 
   ;                                       so that it can be properly taken into account
+  ;   2022/05/26, Y.Zhang (UMN), update the thickness of CMOS
   ;
   ; :to be done:
   ;-
@@ -85,7 +86,7 @@ FUNCTION foxsi4_effective_area, energy_arr, shells=shells, al_um=al_um, be_um=be
   DEFAULT, plot, 0
   DEFAULT, loud, 1
   DEFAULT, no_det, 0
-  IF CMOS EQ 1 THEN DEFAULT, det_thick, 10. ELSE DEFAULT, det_thick, 500. ; microns
+  IF CMOS EQ 1 THEN DEFAULT, det_thick, 25. ELSE DEFAULT, det_thick, 500. ; microns
 
   energy_out = energy_arr
   thickness_str = strtrim(string(round(det_thick)),2)
