@@ -54,11 +54,11 @@ For detectors:
 * Thick CMOS detector with variable thickness (default is 10 microns of Si)
 * other options (such as the TimePix) are not yet implemented in the software
 
-The spectral response also include absorption by the blankets, with the blanketing values from FOXSI-2. The user can also add a shutter by providing the thickness of Al or Be to be included in the response.
-Note that a fancy pinhole attenuator is also considered and that the attenuation factor has been estimated by Dan at some point when writting the proposal, and there is the option to use this estimation for the attenuation by a shutter in the software. This is of course not the most up-to-date or realistic estimate, and it would be good to check with Dan to get better estimates in the future.
+The spectral response also include absorption by the blankets, with the blanketing values from FOXSI-2. The user can also add a shutter/attenuator by providing the thickness of Al or Be to be included in the response.
+Note that there is also an option to use the fancy pixelated attenuator from GSFC in the software (that attenuation file was provided by Dan).
 
 The routine calculating the FOXSI4 spectral response is the routine `foxsi4_flare_response_simulation`, which work in the following way:
-1. Get the effective area (optics + detector efficiency + blanket and optional shutter) using the `foxsi4_effective_area` function
+1. Get the effective area (optics + detector efficiency + blanket and optional shutter + attenuator) using the `foxsi4_effective_area` function
 2. Convolve the count flux with a Gaussian with FWHM equal to the detector energy resolution (which is not energy dependent in this simulation)
 3. Add Poisson noise (optional)
 4. Bin the count spectrum in energy
