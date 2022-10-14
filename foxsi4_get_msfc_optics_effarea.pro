@@ -29,6 +29,7 @@ FUNCTION foxsi4_get_msfc_optics_effarea, energy_arr=energy_arr, plot=plot, _extr
   ;   2020/09/16, SMusset (UoG), change doc
   ;   2020/10/06, SMusset (UoG), change path access + make it compatible with Mac and Unix
   ;   2022/05/11, Y.Zhang (UMN), update data file
+  ;   2022/10/10, Y.Zhang (UMN), update effect area (now we use the innermost and the 3rd innermost shells) 
   ;   
   ; :to be done:
   ;   
@@ -51,7 +52,8 @@ FUNCTION foxsi4_get_msfc_optics_effarea, energy_arr=energy_arr, plot=plot, _extr
 
   energy = opt.field2 ; in kev
  ; effarea = opt.field6 ; in cm2 ; this line was used when we used the sum of the three inner shells
-  effarea = opt.field5 + opt.field4 ; in cm2 ; we now use only the two most inner shells only
+ ; effarea = opt.field5 + opt.field4 ; in cm2 ; we now use only the two most inner shells only
+ effarea = opt.field5 + opt.field3 ; in cm2 ; we now use the innermost and the 3rd innermost shells (S10 and S08) only
 
   selec1 = where(energy NE 0)
 
